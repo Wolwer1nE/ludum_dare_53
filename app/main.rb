@@ -4,8 +4,8 @@ require '/app/button_helper.rb'
 require '/app/courier_helper.rb'
 
 def tick args
-  args.outputs.sounds << "sounds/theme.mp3"
-  #args.audio[:bg_music] = {inputs: "sounds/theme.mp3", looping: true}
+  args.outputs.sounds << "sounds/theme.ogg"
+  #args.audio[:bg_music] = {inputs: "sounds/theme.ogg", looping: true}
   args.state.couriers ||= InitialState::COURIERS
   buttons = []
   args.state.couriers.each do |courier|
