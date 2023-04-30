@@ -4,11 +4,16 @@ module InitialState
   x_delta = 72
   start_y = 620
   y_delta = -100
+  default_size = 64
+  size_config = {
+    w: default_size,
+    h: default_size
+  }
   COURIERS = [
     {
       name: 'Greg',
       price: 0,
-      status: :on_mission,
+      status: :available,
       x: start_x,
       y: start_y
     },
@@ -79,5 +84,5 @@ module InitialState
       x: start_x + 2*x_delta,
       y: start_y+2*y_delta,
     }
-  ]
+  ].map { |x| x.merge(size_config) }
 end

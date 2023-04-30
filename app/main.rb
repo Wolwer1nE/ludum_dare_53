@@ -4,8 +4,21 @@ require '/app/button_helper.rb'
 require '/app/courier_helper.rb'
 
 def tick args
-  args.outputs.sounds << "sounds/theme.ogg"
-  #args.audio[:bg_music] = {inputs: "sounds/theme.ogg", looping: true}
+  args.state.drag ||= :finished
+  overlay_config = {
+    x: 0,
+    y: 0,
+    w: args.grid.w,
+    h: args.grid.h,
+    path: "sprites/ui/overlay.png",
+    a: 25,
+
+  }
+  args.outputs.sprites << overlay_config
+
+  args.state.balance = 50
+  # args.outputs.sounds << "sounds/theme.ogg"
+  # args.audio[:bg_music] = {inputs: "sounds/theme.ogg", looping: true}
   args.state.couriers ||= InitialState::COURIERS
   buttons = []
   args.state.couriers.each do |courier|
@@ -21,6 +34,10 @@ def tick args
     buttons.push(button_config)
   end
   args.state.ui_buttons = buttons
+  if args.state.drag == :finished
+    args.state.selected_courier = args.geometry.find_intersect_rect(args.inputs.mouse,
+                                                                      args.state.couriers)
+  end
 
   draw_ui args
   handle_input args
@@ -50,13 +67,29 @@ def draw_ui(args)
   args.state.couriers.each do |courier|
     CourierHelper.draw(args, courier)
   end
+
+
 end
 
 
 def handle_input(args)
+  selected_courier = args.state.selected_courier
+  if args.inputs.mouse.click && selected_courier && args.state.drag == :finished
+    args.state.drag = :started
+    args.state.mouse_point_inside_square = {
+      x: args.inputs.mouse.x - selected_courier.x,
+      y: args.inputs.mouse.y - selected_courier.y,
+    }
+  elsif args.inputs.mouse.held && (args.state.drag == :started || args.state.drag == :ongoing)
+    args.state.drag = :ongoing
+    selected_courier.x = args.inputs.mouse.x - args.state.mouse_point_inside_square.x
+    selected_courier.y = args.inputs.mouse.y - args.state.mouse_point_inside_square.y
+  elsif args.inputs.mouse.up && args.state.drag == :ongoing
+    args.state.selected_courier = nil
+    args.state.drag = :finished
+  end
 
-  args.state.couriers[1][:x] += args.inputs.left_right * 7
-  args.state.couriers[1][:y] += args.inputs.up_down * 7
+
   button = args.state.clicked_button
   return unless button
 
@@ -74,7 +107,7 @@ def handle_input(args)
       args.outputs.labels << [175 + 150, 610 - 50, args.state.clicked_button.text,  -2]
     end
   # dev mode
-  if args.inputs.keyboard.key_down.control && args.inputs.keyboard.key_down.r
+  if args.inputs.keyboard.key_down.control
     $gtk.reset
   end
 
