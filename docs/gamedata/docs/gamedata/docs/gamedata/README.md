@@ -2,5 +2,4 @@
 ### In progress
 
 Assets by https://craftpix.net
-
-Music by Fesliyan Studios
+Music by 

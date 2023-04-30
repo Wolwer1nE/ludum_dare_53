@@ -54,6 +54,9 @@ end
 
 
 def handle_input(args)
+
+  args.state.couriers[1][:x] += args.inputs.left_right * 7
+  args.state.couriers[1][:y] += args.inputs.up_down * 7
   button = args.state.clicked_button
   return unless button
 
@@ -74,6 +77,9 @@ def handle_input(args)
   if args.inputs.keyboard.key_down.control && args.inputs.keyboard.key_down.r
     $gtk.reset
   end
+
+
+
 end
 
 

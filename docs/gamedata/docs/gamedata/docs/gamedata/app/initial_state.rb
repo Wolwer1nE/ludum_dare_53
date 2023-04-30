@@ -8,7 +8,7 @@ module InitialState
     {
       name: 'Greg',
       price: 0,
-      status: :on_mission,
+      status: :available,
       x: start_x,
       y: start_y
     },

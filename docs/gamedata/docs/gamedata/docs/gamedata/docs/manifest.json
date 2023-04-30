@@ -1,0 +1,18 @@
+{
+	"app/main.rb" : { "filesize" : 80, "filetime" : 1682780951 },
+	"console-logo.png" : { "filesize" : 25034, "filetime" : 1682780951 },
+	"data/.gitkeep" : { "filesize" : 40, "filetime" : 1682780951 },
+	"dragonruby-controller.png" : { "filesize" : 32688, "filetime" : 1682780951 },
+	"dragonruby.png" : { "filesize" : 14417, "filetime" : 1682780951 },
+	"font.ttf" : { "filesize" : 3146844, "filetime" : 1682780951 },
+	"fonts/.gitkeep" : { "filesize" : 27, "filetime" : 1682780951 },
+	"metadata/cvars.txt" : { "filesize" : 701, "filetime" : 1682780951 },
+	"metadata/DRAGONRUBY_PRODUCTION_BUILD" : { "filesize" : 0, "filetime" : 1682780951 },
+	"metadata/game_metadata.txt" : { "filesize" : 2447, "filetime" : 1682780951 },
+	"metadata/icon.png" : { "filesize" : 157056, "filetime" : 1682780951 },
+	"metadata/ios_metadata.txt" : { "filesize" : 923, "filetime" : 1682780951 },
+	"open-source-licenses.txt" : { "filesize" : 32593, "filetime" : 1682780951 },
+	"README-ld53.txt" : { "filesize" : 71, "filetime" : 1682780951 },
+	"sounds/.gitkeep" : { "filesize" : 21, "filetime" : 1682780951 },
+	"" : {}
+}
