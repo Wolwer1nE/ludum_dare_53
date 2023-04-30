@@ -3,6 +3,7 @@ class CourierHelper
   WIDTH = 64
   HEIGHT = 64
   COURIER_ANIMATION_SPEED = 8
+
   ANIMATION_CONFIG = {
     available: {
       name: 'idle',
@@ -44,5 +45,11 @@ class CourierHelper
     args.outputs.labels << {
       x: courier.x, y: courier.y + HEIGHT + 4, text: courier.name,
     }.merge(DEFAULT_LABEL_CONFIG)
+  end
+
+  def self.button_state(courier, balance)
+    return :generic if courier.status == :available
+    return :danger if courier.status == :not_available && courier.price > balance
+    :active
   end
 end

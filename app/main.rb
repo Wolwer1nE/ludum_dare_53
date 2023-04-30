@@ -27,21 +27,22 @@ def tick args
 end
 def setup(args)
   args.state.drag ||= :finished
-  args.state.balance = 50
+  args.state.balance ||= 50
   # args.outputs.sounds << "sounds/theme.ogg"
   # args.audio[:bg_music] = {inputs: "sounds/theme.ogg", looping: true}
   args.state.couriers ||= InitialState::COURIERS
   buttons = []
 
-  args.state.couriers.each do |courier|
+  args.state.couriers.filter{ |x| x.status == :not_available}.each do |courier|
     button_config = {
       x: courier.x - 6,
       y: courier.y - 34,
-      state: courier.status == :available ? :generic : :active,
-      text: courier.status == :available ? "Assign" : "$#{courier.price}",
-      width: 58, height: 32,
+      state: CourierHelper.button_state(courier, args.state.balance),
+      text: "$#{courier.price}",
+      w: 58,
+      h: 32,
       type: :unlock_courier,
-      courier_name: courier.name
+      courier_name: courier.name,
     }
     buttons.push(button_config)
   end
@@ -60,22 +61,17 @@ def draw_ui(args)
 
   args.state.ui_buttons.each do |button|
     ButtonHelper.draw(args, button)
-    if args.inputs.mouse.click
-      if args.inputs.mouse.click.point.inside_rect? ButtonHelper.rect(button)
-        args.state.clicked_button = button
-      end
-
-    end
   end
   args.state.couriers.each do |courier|
     CourierHelper.draw(args, courier)
   end
-
+  args.outputs.labels << {
+    x: 500, y: 500, text: "Balance: $#{args.state.balance}",
+  }.merge(DEFAULT_LABEL_CONFIG)
 
 end
 
-
-def handle_input(args)
+def handle_drag(args)
   selected_courier = args.state.selected_courier
   if args.inputs.mouse.click && selected_courier && args.state.drag == :finished
     args.state.drag = :started
@@ -91,30 +87,37 @@ def handle_input(args)
     args.state.selected_courier = nil
     args.state.drag = :finished
   end
+end
+def handle_click args
+  return unless args.inputs.mouse.click
 
-
-  button = args.state.clicked_button
+  button = args.geometry.find_intersect_rect(args.inputs.mouse,
+                                    args.state.ui_buttons.reject{|x|x.state == :danger})
   return unless button
 
   case button.type
-    when :unlock_courier
-      couriers = args.state.couriers
-      couriers.map! do |courier|
-        if courier.name == button.courier_name
-          courier.status = :available
-        end
-        courier
+  when :unlock_courier
+    couriers = args.state.couriers
+    couriers.map! do |courier|
+      if courier.name == button.courier_name
+        courier.status = :available
+        args.state.balance -= courier.price
       end
-      args.state.couriers = couriers
-    else
-      args.outputs.labels << [175 + 150, 610 - 50, args.state.clicked_button.text,  -2]
+      courier
     end
+    args.state.couriers = couriers
+  else
+    args.outputs.labels << [175 + 150, 610 - 50, args.state.clicked_button.text,  -2]
+  end
+end
+def handle_input(args)
+  handle_drag args
+  handle_click args
+
   # dev mode
   if args.inputs.keyboard.key_down.control
     $gtk.reset
   end
-
-
 
 end
 
