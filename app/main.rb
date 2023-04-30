@@ -4,23 +4,35 @@ require '/app/button_helper.rb'
 require '/app/courier_helper.rb'
 
 def tick args
-  args.state.drag ||= :finished
+  setup args
+
   overlay_config = {
     x: 0,
     y: 0,
     w: args.grid.w,
     h: args.grid.h,
     path: "sprites/ui/overlay.png",
-    a: 25,
+    a: 25
 
   }
   args.outputs.sprites << overlay_config
+  if args.state.drag == :finished
+    args.state.selected_courier = args.geometry.find_intersect_rect(args.inputs.mouse,
+                                                                      args.state.couriers.filter{|x|x.status == :available})
+  end
 
+  draw_ui args
+  handle_input args
+
+end
+def setup(args)
+  args.state.drag ||= :finished
   args.state.balance = 50
   # args.outputs.sounds << "sounds/theme.ogg"
   # args.audio[:bg_music] = {inputs: "sounds/theme.ogg", looping: true}
   args.state.couriers ||= InitialState::COURIERS
   buttons = []
+
   args.state.couriers.each do |courier|
     button_config = {
       x: courier.x - 6,
@@ -34,16 +46,7 @@ def tick args
     buttons.push(button_config)
   end
   args.state.ui_buttons = buttons
-  if args.state.drag == :finished
-    args.state.selected_courier = args.geometry.find_intersect_rect(args.inputs.mouse,
-                                                                      args.state.couriers)
-  end
-
-  draw_ui args
-  handle_input args
-
 end
-
 def draw_layout(args)
   args.outputs.labels << DEFAULT_LABEL_CONFIG.merge({
     x: 20, y: 720, text: 'Couriers',

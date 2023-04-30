@@ -85,4 +85,5 @@ module InitialState
       y: start_y+2*y_delta,
     }
   ].map { |x| x.merge(size_config) }
+
 end
