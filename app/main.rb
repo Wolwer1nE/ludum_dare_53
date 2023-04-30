@@ -4,10 +4,10 @@ require '/app/button_helper.rb'
 require '/app/courier_helper.rb'
 
 def tick args
-
+  args.outputs.sounds << "sounds/theme.mp3"
+  #args.audio[:bg_music] = {inputs: "sounds/theme.mp3", looping: true}
   args.state.couriers ||= InitialState::COURIERS
-  buttons =    [{x: 0, y: 0, width: 80, height: 40, state: :active, text: 'Hello'},
-                {x: 0, y: 40, width: 80, height: 40, state: :danger, text: 'No'}]
+  buttons = []
   args.state.couriers.each do |courier|
     button_config = {
       x: courier.x - 6,
@@ -70,8 +70,7 @@ def handle_input(args)
     else
       args.outputs.labels << [175 + 150, 610 - 50, args.state.clicked_button.text,  -2]
     end
-
-
+  # dev mode
   if args.inputs.keyboard.key_down.control && args.inputs.keyboard.key_down.r
     $gtk.reset
   end
